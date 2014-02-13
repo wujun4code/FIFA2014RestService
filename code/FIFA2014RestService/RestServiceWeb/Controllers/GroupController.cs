@@ -1,4 +1,6 @@
-﻿using RestServiceWeb.Models.DataContracts;
+﻿using RestServiceWeb.BLL.ServiceContracts;
+using RestServiceWeb.BLL.ServiceImpls;
+using RestServiceWeb.Models.DataContracts;
 using RestServiceWeb.Models.Db;
 using System;
 using System.Collections.Generic;
@@ -9,45 +11,10 @@ using System.Web.Http;
 
 namespace RestServiceWeb.Controllers
 {
-    public class GroupController : ApiController
+    public class GroupController : BaseApiController<string,Group>
     {
-
-        #region common CRUD implements
-        // GET api/values
-        public IEnumerable<DataWrapper<Match>> Get()
-        {
-            var rtn = new List<DataWrapper<Match>>();
-
-            return rtn;
-        }
-
-        // GET api/values/5
-        public DataWrapper<Match> Get(int id)
-        {
-            var rtn = new DataWrapper<Match>();
-
-            return rtn;
-        }
-
-        // POST api/values
-        public void Post([FromBody]Match value)
-        {
-
-        }
-
-        // PUT api/values/5
-        public void Put(int id, [FromBody]Match value)
-        {
-
-        }
-
-        // DELETE api/values/5
-        public void Delete(int id)
-        {
-
-        }
-        #endregion
-
+        IGroup db = new SimpleGroupService();
+        
         #region logic relation BLL
 
         [Route("api/group/{groupID}/teams")]
