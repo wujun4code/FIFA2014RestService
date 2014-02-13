@@ -11,10 +11,10 @@ using System.Web.Http;
 
 namespace RestServiceWeb.Controllers
 {
-    public class GroupController : BaseApiController<string,Group>
+    public class GroupController : BaseApiController<string, Group>
     {
         IGroup db = new SimpleGroupService();
-        
+
         #region logic relation BLL
 
         [Route("api/group/{groupID}/teams")]
@@ -24,6 +24,19 @@ namespace RestServiceWeb.Controllers
 
             return rtn;
         }
+        [Route("api/group/{groupID}/teams")]
+        [HttpPost]
+        public DataWrapper<Team> AddNewTeamToGroup(string groupID, Team newTeam)
+        {
+            var rtn = new DataWrapper<Team>();
+            var targetGroup = db.Get(groupID);
+            targetGroup.Teams = new List<Team>();
+            targetGroup.Teams.Add(newTeam);
+            rtn.Entity = newTeam;
+            db.Update(targetGroup);
+            return rtn;
+        }
+
 
         [Route("api/group/{groupID}/matches")]
         public IEnumerable<DataWrapper<Match>> GetAllMatchesInCurrentGroup(string groupID)

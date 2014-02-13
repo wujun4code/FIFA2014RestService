@@ -12,13 +12,13 @@ using System.Web.Http;
 
 namespace RestServiceWeb.Controllers
 {
-    public abstract class BaseApiController<TKey,TEntity> : ApiController
+    public abstract class BaseApiController<TKey, TEntity> : ApiController
         where TEntity : class
     {
         private IBaaSService _db;
         public IBaaSService Db
         {
-            get 
+            get
             {
                 if (_db == null)
                 {
@@ -39,6 +39,7 @@ namespace RestServiceWeb.Controllers
             {
                 var rtnItem = new DataWrapper<TEntity>();
                 rtnItem.Entity = g;
+                rtnItem.ID = GetEntityId(g).ToString();
                 rtn.Add(rtnItem);
             }
             return rtn;
@@ -49,12 +50,18 @@ namespace RestServiceWeb.Controllers
         {
             var rtn = new DataWrapper<TEntity>();
             rtn.Entity = Db.Get<TKey, TEntity>(id);
+            rtn.ID = id.ToString();
             return rtn;
         }
 
-        public void Post([FromBody]TEntity value)
+        public DataWrapper<TEntity> Post([FromBody]TEntity value)
         {
-            Db.Add<TKey, TEntity>(value);
+            var rtn = new DataWrapper<TEntity>();
+            
+            rtn.Entity = Db.Add<TKey, TEntity>(value);
+            rtn.ID = GetEntityId(rtn.Entity).ToString();
+
+            return rtn;
         }
 
         public void Put(TKey id, [FromBody]TEntity value)
@@ -64,9 +71,33 @@ namespace RestServiceWeb.Controllers
         }
         public void Delete(TKey id)
         {
-            TEntity toBeDeleted=default(TEntity);
-             SetTEntityId(toBeDeleted, id);
-             Db.Delete<TKey, TEntity>(toBeDeleted);
+            TEntity toBeDeleted = default(TEntity);
+            SetTEntityId(toBeDeleted, id);
+            Db.Delete<TKey, TEntity>(toBeDeleted);
+        }
+      
+        protected virtual TKey GetEntityId(TEntity entiy)
+        {
+            var rtn = default(TKey);
+            var type = typeof(TEntity);
+
+            var pro_infos = type.GetProperties();
+            foreach (var pi in pro_infos)
+            {
+                var cloud_fields = pi.GetCustomAttributes(typeof(CloudFiled), true);
+
+                if (cloud_fields.Length > 0)
+                {
+                    var cloud_field = cloud_fields[0];
+
+                    if (((CloudFiled)cloud_field).IsPrimaryKey)
+                    {
+                        rtn = (TKey)pi.GetValue(entiy);
+                        break;
+                    }
+                }
+            }
+            return rtn;
         }
         protected virtual void SetTEntityId(object entity, TKey objectId)
         {
