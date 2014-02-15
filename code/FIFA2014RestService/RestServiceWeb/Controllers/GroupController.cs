@@ -1,4 +1,5 @@
-﻿using RestServiceWeb.BLL.ServiceContracts;
+﻿using BaaSReponsitory;
+using RestServiceWeb.BLL.ServiceContracts;
 using RestServiceWeb.BLL.ServiceImpls;
 using RestServiceWeb.Models.DataContracts;
 using RestServiceWeb.Models.Db;
@@ -20,9 +21,7 @@ namespace RestServiceWeb.Controllers
         [Route("api/group/{groupID}/teams")]
         public IEnumerable<DataWrapper<Team>> GetAllTeamsInCurrentGroup(string groupID)
         {
-            var rtn = new List<DataWrapper<Team>>();
-
-            return rtn;
+            return this.GetRelated<Group, Team>(groupID, "Teams");
         }
         [Route("api/group/{groupID}/teams")]
         [HttpPost]
