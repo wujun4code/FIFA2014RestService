@@ -23,26 +23,26 @@ namespace RestServiceWeb.Controllers
         {
             return this.GetRelated<Group, Team>(groupID, "Teams");
         }
+
+        //[Route("api/group/{groupID}/teams")]
+        //[HttpPost]
+        //public DataWrapper<Team> AddNewTeamToGroup(string groupID, Team newTeam)
+        //{
+        //    return this.CreateRelated<Group, Team>(groupID, "Teams", newTeam);
+        //}
+
         [Route("api/group/{groupID}/teams")]
         [HttpPost]
-        public DataWrapper<Team> AddNewTeamToGroup(string groupID, Team newTeam)
+        public DataWrapper<Team> AssignTeamToGroup(string groupID, DataWrapper<Team> newTeam)
         {
-            var rtn = new DataWrapper<Team>();
-            var targetGroup = db.Get(groupID);
-            targetGroup.Teams = new List<Team>();
-            targetGroup.Teams.Add(newTeam);
-            rtn.Entity = newTeam;
-            db.Update(targetGroup);
-            return rtn;
+            return this.AssignRelated<Group, Team>(groupID, "Teams", newTeam);
         }
 
 
         [Route("api/group/{groupID}/matches")]
         public IEnumerable<DataWrapper<Match>> GetAllMatchesInCurrentGroup(string groupID)
         {
-            var rtn = new List<DataWrapper<Match>>();
-
-            return rtn;
+            return this.GetRelated<Group, Match>(groupID, "Matches");
         }
 
         #endregion
