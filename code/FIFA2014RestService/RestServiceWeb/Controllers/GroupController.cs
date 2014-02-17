@@ -1,7 +1,7 @@
 ﻿using BaaSReponsitory;
+using RestService.Core;
 using RestServiceWeb.BLL.ServiceContracts;
 using RestServiceWeb.BLL.ServiceImpls;
-using RestServiceWeb.Models.DataContracts;
 using RestServiceWeb.Models.Db;
 using System;
 using System.Collections.Generic;

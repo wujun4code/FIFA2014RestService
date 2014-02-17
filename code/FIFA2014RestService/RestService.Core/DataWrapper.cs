@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace RestServiceWeb.Models.DataContracts
+namespace RestService.Core
 {
     public class DataWrapper<DbModel>
     {
         public string ID { get; set; }
 
-        public DbModel Entity{get;set;}
+        public DbModel Entity { get; set; }
 
         public DateTime updatedAt { get; set; }
 

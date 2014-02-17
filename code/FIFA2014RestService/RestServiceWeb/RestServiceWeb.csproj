@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\DataContracts\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -183,7 +184,6 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="BLL\ServiceContracts\IGroup.cs" />
     <Compile Include="BLL\ServiceImpls\SimpleGroupService.cs" />
-    <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\MatchController.cs" />
@@ -191,7 +191,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\DataContracts\DataWrapper.cs" />
     <Compile Include="Models\Db\BattleRank.cs" />
     <Compile Include="Models\Db\Group.cs" />
     <Compile Include="Models\Db\Match.cs" />
@@ -260,7 +259,12 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Scripts\jquery-2.1.0.min.map" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\RestService.Core\RestService.Core.csproj">
+      <Project>{8cac892e-2809-4a71-a75d-75143dfa892d}</Project>
+      <Name>RestService.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />

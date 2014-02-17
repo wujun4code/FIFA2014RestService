@@ -1,8 +1,4 @@
 ﻿using BaaSReponsitory;
-using RestServiceWeb.BLL.ServiceContracts;
-using RestServiceWeb.BLL.ServiceImpls;
-using RestServiceWeb.Models.DataContracts;
-using RestServiceWeb.Models.Db;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace RestServiceWeb.Controllers
+namespace RestService.Core
 {
     public abstract class BaseApiController<TKey, TEntity> : ApiController
         where TEntity : class
@@ -102,7 +98,7 @@ namespace RestServiceWeb.Controllers
         }
 
 
-        protected virtual DataWrapper<T> AssignRelated<S, T>(string S_ID,string PropertyName, DataWrapper<T> T_wrapper)
+        protected virtual DataWrapper<T> AssignRelated<S, T>(string S_ID, string PropertyName, DataWrapper<T> T_wrapper)
             where T : class
             where S : class
         {

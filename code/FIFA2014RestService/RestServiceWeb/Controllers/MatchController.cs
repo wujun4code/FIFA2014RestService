@@ -1,4 +1,4 @@
-﻿using RestServiceWeb.Models.DataContracts;
+﻿using RestService.Core;
 using RestServiceWeb.Models.Db;
 using System;
 using System.Collections.Generic;
