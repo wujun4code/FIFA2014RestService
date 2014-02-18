@@ -21,7 +21,7 @@ namespace RestServiceWeb.Controllers
         [Route("api/group/{groupID}/teams")]
         public IEnumerable<DataWrapper<Team>> GetAllTeamsInCurrentGroup(string groupID)
         {
-            return this.GetRelated<Group, Team>(groupID, "Teams");
+            return this.GetOne2ManyRelated<Group, Team>(groupID, "Teams");
         }
 
         [Route("api/group/{groupID}/teams")]
@@ -35,7 +35,7 @@ namespace RestServiceWeb.Controllers
         [Route("api/group/{groupID}/matches")]
         public IEnumerable<DataWrapper<Match>> GetAllMatchesInCurrentGroup(string groupID)
         {
-            return this.GetRelated<Group, Match>(groupID, "Matches");
+            return this.GetOne2ManyRelated<Group, Match>(groupID, "Matches");
         }
 
         #endregion

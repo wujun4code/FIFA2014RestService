@@ -16,13 +16,13 @@ namespace RestServiceWeb.Controllers
         [Route("api/team/{teamID}/players")]
         public IEnumerable<DataWrapper<Player>> GetAllPlayersInCurrentTeam(string teamID)
         {
-            return this.GetRelated<Team, Player>(teamID, "Players");
+            return this.GetOne2ManyRelated<Team, Player>(teamID, "Players");
         }
 
         [Route("api/team/{teamID}/matches")]
         public IEnumerable<DataWrapper<Match>> GetAllMatchesInCurrentTeam(string teamID)
         {
-            return this.GetRelated<Team, Match>(teamID, "Matches");
+            return this.GetOne2ManyRelated<Team, Match>(teamID, "Matches");
         }
         #endregion
 

@@ -107,27 +107,27 @@ namespace RestService.Core
             Db.Delete<TKey, TEntity>(toBeDeleted);
         }
 
-        protected virtual DataWrapper<T> AssignRelated<S, T>(string S_ID, DataWrapper<T> T_wrapper)
+        protected virtual DataWrapper<T> AssignRelated<S, T>(TKey S_ID, DataWrapper<T> T_wrapper)
             where T : class
             where S : class
         {
-            string propertyName=string.Empty;
+            string propertyName = string.Empty;
             var relationInfo = CloudObjectAnalyze.GetRealtionInfo<S, T>(out propertyName);
             return AssignRelated<S, T>(S_ID, propertyName, relationInfo, T_wrapper);
         }
 
 
-        protected virtual DataWrapper<T> AssignRelated<S, T>(string S_ID, string PropertyName, DataWrapper<T> T_wrapper)
+        protected virtual DataWrapper<T> AssignRelated<S, T>(TKey S_ID, string PropertyName, DataWrapper<T> T_wrapper)
             where T : class
             where S : class
         {
-            
+
             var relationInfo = CloudObjectAnalyze.GetRealtionInfo<S, T>(PropertyName);
 
             return AssignRelated<S, T>(S_ID, PropertyName, relationInfo, T_wrapper);
-           
+
         }
-        protected virtual DataWrapper<T> AssignRelated<S, T>(string S_ID, string PropertyName, CloudFiled RelatinInfo,DataWrapper<T> T_wrapper)
+        protected virtual DataWrapper<T> AssignRelated<S, T>(TKey S_ID, string PropertyName, CloudFiled RelatinInfo, DataWrapper<T> T_wrapper)
             where T : class
             where S : class
         {
@@ -138,7 +138,7 @@ namespace RestService.Core
             }
             else
             {
-                T_wrapper.Entity = Db.Add<string, T>(T_wrapper.Entity);
+                T_wrapper.Entity = Db.Add<TKey, T>(T_wrapper.Entity);
             }
 
             if (RelatinInfo.RelationType == CloudFiledType.OneToOne || RelatinInfo.RelationType == CloudFiledType.ManyToOne)
@@ -152,12 +152,12 @@ namespace RestService.Core
 
             return rtn;
         }
-        protected virtual DataWrapper<T> CreateOne2ManyRelated<S, T>(string S_ID, string PropertyName, T T_entity)
+        protected virtual DataWrapper<T> CreateOne2ManyRelated<S, T>(TKey S_ID, string PropertyName, T T_entity)
             where T : class
             where S : class
         {
             var rtn = new DataWrapper<T>();
-            var S_entity = Db.Get<string, S>(S_ID);
+            var S_entity = Db.Get<TKey, S>(S_ID);
             this.EntityRelationService.AddOne2ManyRelation(S_entity, PropertyName, T_entity);
             Db.Update<string, S>(S_entity);
             rtn.Entity = T_entity;
@@ -165,29 +165,54 @@ namespace RestService.Core
             return rtn;
         }
 
-        protected virtual DataWrapper<T> CreateMany2OneRelated<S, T>(string S_ID, string PropertyName, T T_entity)
+        protected virtual DataWrapper<T> CreateMany2OneRelated<S, T>(TKey S_ID, string PropertyName, T T_entity)
             where T : class
             where S : class
         {
             var rtn = new DataWrapper<T>();
-            var S_entity = Db.Get<string, S>(S_ID);
+            var S_entity = Db.Get<TKey, S>(S_ID);
             SetTInS<S, T>(S_entity, PropertyName, T_entity);
-            Db.Update<string, S>(S_entity);
+            Db.Update<TKey, S>(S_entity);
             rtn.Entity = T_entity;
             rtn.ID = GetEntityId<T>(T_entity).ToString();
             return rtn;
         }
 
-        protected virtual List<DataWrapper<T>> GetRelated<S, T>(string S_ID)
+        protected virtual DataWrapper<T> GetMany2OneRelated<S, T>(TKey S_ID)
             where T : class
             where S : class
         {
-            string PropertyName = new SimpleCloudObjectAnalyze().GetOne2ManyPropertyName<S, T>();
+            string propertyName = string.Empty;
 
-            return this.GetRelated<S, T>(S_ID, PropertyName);
+            var relationInfo = CloudObjectAnalyze.GetRealtionInfo<S, T>(out propertyName);
+
+            return this.GetMany2OneRelated<S, T>(S_ID, propertyName);
         }
 
-        protected virtual List<DataWrapper<T>> GetRelated<S, T>(string S_ID, string PropertyName)
+        protected virtual DataWrapper<T> GetMany2OneRelated<S, T>(TKey S_ID, string PropertyName)
+            where T : class
+            where S : class
+        {
+            DataWrapper<T> rtn = new DataWrapper<T>();
+            var S_entity = Db.Get<TKey, S>(S_ID);
+            rtn.Entity = GetTInS<S, T>(S_entity, PropertyName);
+            var T_ID = GetEntityId<TKey,T>(rtn.Entity);
+            rtn.Entity = Db.Get<TKey, T>(T_ID);
+            return rtn;
+        }
+
+        protected virtual List<DataWrapper<T>> GetOne2ManyRelated<S, T>(string S_ID)
+            where T : class
+            where S : class
+        {
+            string propertyName = string.Empty;
+
+            var relationInfo = CloudObjectAnalyze.GetRealtionInfo<S, T>(out propertyName);
+
+            return this.GetOne2ManyRelated<S, T>(S_ID, propertyName);
+        }
+
+        protected virtual List<DataWrapper<T>> GetOne2ManyRelated<S, T>(string S_ID, string PropertyName)
             where T : class
             where S : class
         {
@@ -207,32 +232,12 @@ namespace RestService.Core
 
         protected virtual string GetEntityId<T>(T entity)
         {
-            var rtn = "";
-            var type = typeof(T);
-
-            var pro_infos = type.GetProperties();
-            foreach (var pi in pro_infos)
-            {
-                var cloud_fields = pi.GetCustomAttributes(typeof(CloudFiled), true);
-
-                if (cloud_fields.Length > 0)
-                {
-                    var cloud_field = cloud_fields[0];
-
-                    if (((CloudFiled)cloud_field).IsPrimaryKey)
-                    {
-                        rtn = pi.GetValue(entity).ToString();
-                        break;
-                    }
-                }
-            }
-            return rtn;
+            return GetEntityId<string, T>(entity);
         }
-
-        protected virtual TKey GetEntityId(TEntity entity)
+        protected virtual TK GetEntityId<TK, TE>(TE entity)
         {
-            var rtn = default(TKey);
-            var type = typeof(TEntity);
+            var rtn = default(TK);
+            var type = typeof(TE);
 
             var pro_infos = type.GetProperties();
             foreach (var pi in pro_infos)
@@ -245,13 +250,14 @@ namespace RestService.Core
 
                     if (((CloudFiled)cloud_field).IsPrimaryKey)
                     {
-                        rtn = (TKey)pi.GetValue(entity);
+                        rtn = (TK)pi.GetValue(entity);
                         break;
                     }
                 }
             }
             return rtn;
         }
+       
         protected virtual void SetTEntityId(object entity, TKey objectId)
         {
             var type = entity.GetType();
@@ -301,9 +307,22 @@ namespace RestService.Core
             var pi = S_type.GetProperty(PropertyName);
             if (pi.PropertyType == T_type)
             {
-                pi.SetValue(entity, source);
+                pi.SetValue(source, entity);
             }
 
+        }
+
+        protected virtual T GetTInS<S, T>(S source, string PropertyName)
+        {
+            var rtn = default(T);
+            var T_type = typeof(T);
+            var S_type = typeof(S);
+            var pi = S_type.GetProperty(PropertyName);
+            if (pi.PropertyType == T_type)
+            {
+               rtn= (T)pi.GetValue(source);
+            }
+            return rtn;
         }
     }
 }

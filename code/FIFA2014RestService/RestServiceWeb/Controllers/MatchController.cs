@@ -16,24 +16,14 @@ namespace RestServiceWeb.Controllers
         [Route("api/match/{matchID}/result")]
         public DataWrapper<MatchResult> GetResultOfMatch(string matchID)
         {
-            DataWrapper<MatchResult> rtn = new DataWrapper<MatchResult>();
-            var S_entity = Db.Get<string, Match>(matchID);
-            rtn.Entity = S_entity.Result;
-            return rtn;
+            return this.GetMany2OneRelated<Match, MatchResult>(matchID);
         }
 
         [Route("api/match/{matchID}/result")]
         [HttpPost]
-        public DataWrapper<MatchResult> GetResultOfMatch(string matchID, DataWrapper<MatchResult> result)
+        public DataWrapper<MatchResult> SetResultOfMatch(string matchID, DataWrapper<MatchResult> macthResult)
         {
-            DataWrapper<MatchResult> rtn = new DataWrapper<MatchResult>();
-            if (result.ID != null)
-            {
-                result.Entity.Id = result.ID;
-            }
-            var S_entity = Db.Get<string, Match>(matchID);
-            rtn.Entity = S_entity.Result;
-            return rtn;
+            return this.AssignRelated<Match, MatchResult>(matchID, macthResult);
         }
 
         #endregion
