@@ -24,13 +24,6 @@ namespace RestServiceWeb.Controllers
             return this.GetRelated<Group, Team>(groupID, "Teams");
         }
 
-        //[Route("api/group/{groupID}/teams")]
-        //[HttpPost]
-        //public DataWrapper<Team> AddNewTeamToGroup(string groupID, Team newTeam)
-        //{
-        //    return this.CreateRelated<Group, Team>(groupID, "Teams", newTeam);
-        //}
-
         [Route("api/group/{groupID}/teams")]
         [HttpPost]
         public DataWrapper<Team> AssignTeamToGroup(string groupID, DataWrapper<Team> newTeam)
