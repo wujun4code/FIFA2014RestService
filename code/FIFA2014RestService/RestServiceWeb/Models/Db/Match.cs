@@ -17,6 +17,9 @@ namespace RestServiceWeb.Models.Db
         [DataMember]
         public string SerialNumber { get; set; }
 
+        [DataMember]
+        public string FIFASerialNumber { get; set; }
+
         [CloudFiled(ColumnName = "HostTeam", IsRelation = true, RelationType = CloudFiledType.ManyToOne)]
         public Team HostTeam { get; set; }
 
@@ -26,12 +29,20 @@ namespace RestServiceWeb.Models.Db
         [CloudFiled(ColumnName = "Result", IsRelation = true, RelationType = CloudFiledType.OneToOne)]
         public MatchResult Result { get; set; }
 
+        [CloudFiled(ColumnName = "PlayerPerformances", IsRelation = true, RelationType = CloudFiledType.OneToMany)]
+        public List<Performance> PlayerPerformances { get; set; }
+
         [DataMember]
         public DateTime StartUTCTime { get; set; }
 
         [DataMember]
         public DateTime EndUTCTime { get; set; }
 
+        [DataMember]
+        public bool Running { get; set; }
+
+        [DataMember]
+        public bool IsLive { get; set; }
 
         
     }

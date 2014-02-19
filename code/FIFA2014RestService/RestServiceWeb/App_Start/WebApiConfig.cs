@@ -20,6 +20,11 @@ namespace RestServiceWeb
                 defaults: new { id = RouteParameter.Optional }
             );
 
+            //config.Routes.MapHttpRoute(
+            //    name: "FilterApi",
+            //    routeTemplate: "api/{controller}/{action}"
+            //);
+
             var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
         }

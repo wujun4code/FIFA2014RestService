@@ -20,7 +20,10 @@ namespace RestServiceWeb.Models.Db
         [DataMember]
         public string NickName { get; set; }
 
+        [DataMember]
+        public string SquadNumber { get; set; }
 
-
+        [CloudFiled(ColumnName = "Performances", IsRelation = true, RelationType = CloudFiledType.OneToMany)]
+        public List<Performance> Performances { get; set; }
     }
 }

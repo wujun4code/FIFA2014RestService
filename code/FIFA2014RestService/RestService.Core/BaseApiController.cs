@@ -61,21 +61,47 @@ namespace RestService.Core
             }
         }
 
+        //public virtual IEnumerable<DataWrapper<TEntity>> Get()
+        //{
+        //    var all = Db.GetAll<TKey, TEntity>();
+        //    var rtn = CreateByTEntityCollection(all);
+        //    return rtn;
+        //}
 
-        public virtual IEnumerable<DataWrapper<TEntity>> Get()
+        protected virtual IEnumerable<DataWrapper<TEntity>> CreateByTEntityCollection(IQueryable<TEntity> entities)
         {
             var rtn = new List<DataWrapper<TEntity>>();
-            var all = Db.GetAll<TKey, TEntity>();
-            foreach (var g in all)
+            foreach (var e in entities)
             {
                 var rtnItem = new DataWrapper<TEntity>();
-                rtnItem.Entity = g;
-                rtnItem.ID = GetEntityId(g).ToString();
+                rtnItem.Entity = e;
+                rtnItem.ID = GetEntityId(e).ToString();
                 rtn.Add(rtnItem);
             }
             return rtn;
         }
 
+        public virtual IEnumerable<DataWrapper<TEntity>> GetByFilter([FromUri]FilterWrapper filterWrapper)
+        {
+            IQueryable<TEntity> result = null;
+            bool getAll = true;
+            if (filterWrapper != null)
+            {
+                if (!string.IsNullOrEmpty(filterWrapper.where))
+                {
+                    result = Db.GetByFilter<TKey, TEntity>(filterWrapper.where);
+                    getAll = false;
+                }
+            }
+            if (getAll)
+            {
+                result = Db.GetAll<TKey, TEntity>();
+            }
+
+            var rtn = CreateByTEntityCollection(result);
+
+            return rtn;
+        }
 
         public virtual DataWrapper<TEntity> Get(TKey id)
         {
@@ -106,6 +132,7 @@ namespace RestService.Core
             SetTEntityId(toBeDeleted, id);
             Db.Delete<TKey, TEntity>(toBeDeleted);
         }
+
 
         protected virtual DataWrapper<T> AssignRelated<S, T>(TKey S_ID, DataWrapper<T> T_wrapper)
             where T : class
@@ -159,7 +186,7 @@ namespace RestService.Core
             var rtn = new DataWrapper<T>();
             var S_entity = Db.Get<TKey, S>(S_ID);
             this.EntityRelationService.AddOne2ManyRelation(S_entity, PropertyName, T_entity);
-            Db.Update<string, S>(S_entity);
+            Db.Update<TKey, S>(S_entity);
             rtn.Entity = T_entity;
             rtn.ID = GetEntityId<T>(T_entity).ToString();
             return rtn;
@@ -196,7 +223,7 @@ namespace RestService.Core
             DataWrapper<T> rtn = new DataWrapper<T>();
             var S_entity = Db.Get<TKey, S>(S_ID);
             rtn.Entity = GetTInS<S, T>(S_entity, PropertyName);
-            var T_ID = GetEntityId<TKey,T>(rtn.Entity);
+            var T_ID = GetEntityId<TKey, T>(rtn.Entity);
             rtn.Entity = Db.Get<TKey, T>(T_ID);
             return rtn;
         }
@@ -257,7 +284,7 @@ namespace RestService.Core
             }
             return rtn;
         }
-       
+
         protected virtual void SetTEntityId(object entity, TKey objectId)
         {
             var type = entity.GetType();
@@ -320,7 +347,7 @@ namespace RestService.Core
             var pi = S_type.GetProperty(PropertyName);
             if (pi.PropertyType == T_type)
             {
-               rtn= (T)pi.GetValue(source);
+                rtn = (T)pi.GetValue(source);
             }
             return rtn;
         }
