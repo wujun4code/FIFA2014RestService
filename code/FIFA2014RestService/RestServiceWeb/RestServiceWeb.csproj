@@ -265,6 +265,7 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\MatchAdmin\Index.cshtml" />
     <Content Include="Views\MatchAdmin\Create.cshtml" />
+    <Content Include="Views\MatchAdmin\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
