@@ -74,9 +74,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Portable.Licensing">
-      <HintPath>..\packages\Portable.Licensing.1.1.0\lib\portable-net40+sl4+wp7+win8\Portable.Licensing.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
@@ -144,18 +141,6 @@
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
-    <Reference Include="T4MVCExtensions">
-      <HintPath>..\packages\T4MVCExtensions.3.6.5\lib\net40\T4MVCExtensions.dll</HintPath>
-    </Reference>
-    <Reference Include="TwitterBootstrapMVC.Eyecon.Datepicker.MVC5">
-      <HintPath>..\packages\TwitterBootstrapMVC.Eyecon.Datepicker.MVC5.1.0.2\lib\net40\TwitterBootstrapMVC.Eyecon.Datepicker.MVC5.dll</HintPath>
-    </Reference>
-    <Reference Include="TwitterBootstrapMVC.Flaty.MVC5">
-      <HintPath>..\packages\TwitterBootstrapMVC.Flaty.MVC5.1.0.0\lib\net40\TwitterBootstrapMVC.Flaty.MVC5.dll</HintPath>
-    </Reference>
-    <Reference Include="TwitterBootstrapMVC5">
-      <HintPath>..\packages\TwitterBootstrapMVC5.3.11.5\lib\net40\TwitterBootstrapMVC5.dll</HintPath>
-    </Reference>
     <Reference Include="WebGrease">
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
     </Reference>
@@ -163,6 +148,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\DataContracts\" />
+    <Folder Include="Models\View\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />

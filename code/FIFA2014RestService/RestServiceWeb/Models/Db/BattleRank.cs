@@ -8,7 +8,7 @@ using System.Web;
 namespace RestServiceWeb.Models.Db
 {
     [CloudObject(ClassName = "Group")]
-    [DataContract]
+    [DataContract] 
     public class BattleRank
     {
         [CloudFiled(ColumnName = "Key", IsPrimaryKey = true)]
